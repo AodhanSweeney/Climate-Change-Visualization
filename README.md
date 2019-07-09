@@ -3,7 +3,7 @@ This is a webgl-globe created inspired by google chome experiments used to visua
 
 # The link to GISTEMP v4: https://data.giss.nasa.gov/gistemp/
   NetCDF files can be downloaded from this website
-# The link to a version of this climate change viewer in action: http://students.washington.edu/aodhan/
+# The link to a version of this climate change viewer in action: http://students.washington.edu/aodhan/webgl_globe.html
 
 # Screenshots:
 
