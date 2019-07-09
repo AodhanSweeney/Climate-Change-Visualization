@@ -7,6 +7,6 @@ This is a webgl-globe created inspired by google chome experiments used to visua
 
 # Screenshots:
 
-![alt text](https://github.com/AodhanSweeney/climate_change_globe/1910s.png)
+![alt text](https://github.com/AodhanSweeney/climate_change_globe/blob/master/1910s.png)
 
-![alt text](https://github.com/AodhanSweeney/climate_change_globe/2010s.png)
+![alt text](https://github.com/AodhanSweeney/climate_change_globe/blob/master/2010s.pngg)
