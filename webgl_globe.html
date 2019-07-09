@@ -1,0 +1,269 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <title>Aodhan's Climate Change Viewer</title>
+    <meta charset="utf-8">
+    <style type="text/css">
+      html {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background: #000000 url(loading.gif) center center no-repeat;
+        color: #ffffff;
+        font-family: sans-serif;
+        font-size: 13px;
+        line-height: 20px;
+        height: 100%;
+      }
+
+      #info {
+        font-size: 11px;
+        position: absolute;
+        bottom: 5px;
+        background-color: rgba(0,0,0,0.8);
+        border-radius: 3px;
+        right: 10px;
+        padding: 10px;
+
+      }
+
+      #currentInfo {
+        width: 70px;
+        position: absolute;
+        left: 20px;
+        top: 140px;
+        padding: 10px;
+        background-color: rgba(.9,0.9,0.9,0.3);
+        border-radius: 3px;
+        font: 15px Georgia;
+        padding: 10px;
+      }
+
+	 #dataSelectDropdown {
+        width: 350px;
+        position: absolute;
+        left: 20px;
+        top: 85px;
+        border-top: 1px solid rgba(255,255,255,0.4);
+		border-bottom: 1px solid rgba(255,255,255,0.4);
+        padding: 10px;
+      }
+
+      a {
+        color: #aaa;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .bull {
+        padding: 0 5px;
+        color: #555;
+      }
+      #key {
+        position: absolute;
+        bottom: 50px;
+        width: 200px;
+        left: 40px;
+        color: white;
+        background-color: rgba(.9,0.9,0.9,0.3);
+        border-radius: 3px;
+        font: 15px Georgia;
+        padding: 10px;
+        }
+
+      #bio {
+        position: absolute;
+        top: 80px;
+        width: 320px;
+        right: 40px;
+        color: white;
+        background-color: rgba(.9,.9,.9,0.3);
+        border-radius: 3px;
+        font: 15px Georgia;
+        padding: 10px;
+      }
+
+      #title {
+        position: absolute;
+        top: 20px;
+        width: 380px;
+        left: 20px;
+        background-color: rgba(0,0,0,0.2);
+        border-radius: 3px;
+        font: 20px Georgia;
+        padding: 10px;
+      }
+
+      .year {
+        font: 11px Verdana, Geneva, sans-serif;
+        line-height: 30px;
+        height: 30px;
+        text-align: left;
+        float: left;
+        width: 150px;
+        color: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        -webkit-transition: all 0.1s ease-out;
+      }
+
+      .year:hover, .year.active {
+        font-size: 13px;
+        color: #fff;
+      }
+
+	  #dataSelection option {
+		  background: #466c41;
+	  }
+
+
+	  select {
+		  background: #466c41;
+		  border: 1px #CCCCCC;
+		  color: #FFF;
+		  line-height:25px;
+		  width:220px;
+	  }
+
+
+    </style>
+  </head>
+  <body>
+
+    <div id="title">
+          A Century of Surface Temperature Anomalies
+    </div>
+
+  <div id="container"></div>
+
+
+     </div>
+   <div id="currentInfo">
+    <span id="year1910" class="year">1910s</span>
+    <span id="year1920" class="year">1920s</span>
+    <span id="year1930" class="year">1930s</span>
+    <span id="year1940" class="year">1940s</span>
+    <span id="year1980" class="year">1980s</span>
+	  <span id="year1990" class="year">1990s</span>
+    <span id="year2000" class="year">2000s</span>
+    <span id="year2010" class="year">2010s</span>
+  </div>
+
+  <div id="bio">
+    This globe shows the average temperature anomalies over land between the years of 1910
+    and 2019 in decades. Temperature anomalies are defined by the difference in
+    temperature at that location between at a given period in time and
+    the average temperature between the years of 1951 and 1980 (chosen by NASA).
+  </div>
+
+  <div id="key">
+    The color and height of the spikes are jointly scaled to show how much average temperature
+    has changed from the 1951-1980 average. Blues and purples, shows temperatures cooler than the average while
+    reds, yellows and oranges show temperatures warmer than the average.
+  </div>
+
+
+  <div id="info">
+        <strong><a href="http://www.chromeexperiments.com/globe">WebGL Globe</a></strong> <span class="bull">&bull;</span> Created by Aodhan Sweeney <span class="bull">&bull;</span> Data acquired from <a href="https://data.giss.nasa.gov/gistemp/">NASA-GISTEMPv4</a>
+  </div>
+
+  <script type="text/javascript" src="third-party/Detector.js"></script>
+  <script type="text/javascript" src="third-party/three.min.js"></script>
+  <script type="text/javascript" src="third-party/Tween.js"></script>
+  <script type="text/javascript" src="globe.js"></script>
+  <script type="text/javascript">
+
+    if(!Detector.webgl){
+      Detector.addGetWebGLMessage();
+    } else {
+
+
+    var years = ['1910','1920','1930','1940','1980','1990', '2000', '2010'];
+    var container = document.getElementById('container');
+
+	var globe;
+
+	  loadData('temp_anomaly_land.json');
+
+
+    }
+
+	function clearData()
+	{
+		var myNode = document.getElementById("container");
+		while (myNode.firstChild) {
+			myNode.removeChild(myNode.firstChild);
+		}
+	}
+
+	function loadData(url)
+	{
+
+		document.body.style.backgroundImage = "url('loading.gif')";
+		clearData();
+
+		var xhr;
+		xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.onreadystatechange = function(e) {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            window.data = data;
+
+			globe = new DAT.Globe(container);
+
+	   var change = function(i) {
+            return function() {
+				console.log(i);
+                globe.resetData();
+				console.log(i);
+                globe.addData(data[i][1], {format: 'magnitude'});
+                globe.createPoints();
+                globe.animate();
+
+
+				var y = document.getElementById('year'+years[i]);
+				  if (y.getAttribute('class') === 'year active') {
+					return;
+				  }
+
+               var yy = document.getElementsByClassName('year');
+			  for(var j=0; j<yy.length; j++) {
+				yy[j].setAttribute('class','year');
+			  }
+			  y.setAttribute('class', 'year active');
+            };
+        }
+
+		globe.addData(data[0][1], {format: 'magnitude'});
+
+
+
+
+      for(var i = 0; i<years.length; i++) {
+        var y = document.getElementById('year'+years[i]);
+        y.addEventListener('click', change(i), false);
+		y.setAttribute('class','year');
+		console.log("add click " +i);
+      }
+
+	  document.getElementById("year1910").setAttribute('class', 'year active');
+
+            globe.createPoints();
+            globe.animate();
+            document.body.style.backgroundImage = 'none'; // remove loading
+          }
+        }
+      };
+      xhr.send(null);
+	}
+
+  </script>
+
+  </body>
+
+</html>
