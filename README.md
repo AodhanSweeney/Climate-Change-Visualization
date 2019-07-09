@@ -9,4 +9,4 @@ This is a webgl-globe created inspired by google chome experiments used to visua
 
 ![alt text](https://github.com/AodhanSweeney/climate_change_globe/blob/master/1910s.png)
 
-![alt text](https://github.com/AodhanSweeney/climate_change_globe/blob/master/2010s.pngg)
+![alt text](https://github.com/AodhanSweeney/climate_change_globe/blob/master/2010s.png)
